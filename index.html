@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BCPS Grade Calculator</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f7;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.25rem;
+    }
+    p {
+      margin-top: 0.25rem;
+      color: #555;
+      font-size: 0.95rem;
+    }
+    .field-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 16px;
+      align-items: center;
+    }
+    label {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    select {
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.95rem;
+      background: #fff;
+    }
+    button {
+      margin-top: 18px;
+      margin-right: 8px;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+      font-weight: 600;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .controls-row {
+      margin-top: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      color: #374151;
+      margin-top: 8px;
+    }
+    input[type="checkbox"] {
+      transform: scale(1.1);
+    }
+    .result {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      border: 1px solid #d1d5db;
+    }
+    .result strong {
+      font-size: 1.05rem;
+    }
+    .warning {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: #b45309;
+    }
+    .hidden {
+      display: none;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 0.9rem;
+      width: 100%;
+      max-width: 360px;
+    }
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 4px 6px;
+      text-align: left;
+    }
+    th {
+      background: #e5e7eb;
+      font-weight: 600;
+    }
+    .math-section {
+      margin-top: 20px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      font-size: 0.9rem;
+    }
+    .math-details {
+      margin-top: 8px;
+      font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+    }
+    code {
+      font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.85rem;
+      background: #e5e7eb;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    @media (max-width: 700px) {
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+      table {
+        max-width: 100%;
+      }
+      .controls-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>BCPS Grade Calculator</h1>
+    <p>
+      Enter marking period grades and exam grades to estimate a final course or semester grade
+      based on BCPS weighting rules.
+    </p>
+
+    <div class="field-grid">
+      <label for="courseType">Course type</label>
+      <select id="courseType">
+        <option value="sem-with-exam">Semester - with exam</option>
+        <option value="sem-no-exam">Semester - no exam</option>
+        <option value="full-with-exam">Full year - with exam</option>
+        <option value="full-no-exam">Full year - no exam</option>
+        <option value="sem-eoc-partB">Semester - Gov or Living Systems Part B (EOC 20 percent)</option>
+      </select>
+    </div>
+
+    <!-- Full year marking periods -->
+    <div id="fullYearInputs">
+      <div class="field-grid">
+        <label for="mp1Full">MP1 grade</label>
+        <select id="mp1Full">
+          <option value="">Select</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+        </select>
+
+        <label for="mp2Full">MP2 grade</label>
+        <select id="mp2Full">
+          <option value="">Select</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+        </select>
+
+        <label for="mp3Full">MP3 grade</label>
+        <select id="mp3Full">
+          <option value="">Select</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+        </select>
+
+        <label for="mp4Full">MP4 grade</label>
+        <select id="mp4Full">
+          <option value="">Select</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Full year exam row -->
+    <div id="fullYearExamRow" class="field-grid">
+      <label for="examFull" id="examFullLabel">Exam grade</label>
+      <select id="examFull">
+        <option value="">Select</option>
+        <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+      </select>
+    </div>
+
+    <!-- Semester marking periods (only 2 MPs) -->
+    <div id="semesterInputs" class="hidden">
+      <div class="field-grid">
+        <label for="mp1Sem">MP1 grade</label>
+        <select id="mp1Sem">
+          <option value="">Select</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+        </select>
+
+        <label for="mp2Sem">MP2 grade</label>
+        <select id="mp2Sem">
+          <option value="">Select</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Semester exam row -->
+    <div id="semesterExamRow" class="field-grid hidden">
+      <label for="examSem" id="examSemLabel">Exam grade</label>
+      <select id="examSem">
+        <option value="">Select</option>
+        <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+      </select>
+    </div>
+
+    <div class="controls-row">
+      <button id="calcBtn">Calculate final grade</button>
+    </div>
+
+    <label class="checkbox-container">
+      <input type="checkbox" id="showMathCheck">
+      <span>Show math and reference tables</span>
+    </label>
+
+    <div id="result" class="result hidden"></div>
+
+    <div id="mathSection" class="math-section hidden">
+      <h2>How grades are calculated</h2>
+
+      <p><strong>Letter grade values</strong></p>
+      <table>
+        <tr><th>Letter</th><th>Value</th></tr>
+        <tr><td>A</td><td>4</td></tr>
+        <tr><td>B</td><td>3</td></tr>
+        <tr><td>C</td><td>2</td></tr>
+        <tr><td>D</td><td>1</td></tr>
+        <tr><td>E</td><td>0</td></tr>
+      </table>
+
+      <p><strong>Final grade ranges</strong></p>
+      <table>
+        <tr><th>Final numeric</th><th>Final letter</th></tr>
+        <tr><td>3.50 to 4.00</td><td>A</td></tr>
+        <tr><td>2.50 to 3.49</td><td>B</td></tr>
+        <tr><td>1.50 to 2.49</td><td>C</td></tr>
+        <tr><td>1.00 to 1.49</td><td>D</td></tr>
+        <tr><td>0.00 to 0.99</td><td>E</td></tr>
+      </table>
+
+      <p><strong>Weighting formulas</strong></p>
+      <ul style="font-size:0.9rem; padding-left:18px; margin-top:4px;">
+        <li>Semester, no exam: <code>Numeric = 0.50 × MP1 + 0.50 × MP2</code></li>
+        <li>Semester, with exam: <code>Numeric = 0.45 × MP1 + 0.45 × MP2 + 0.10 × Exam</code></li>
+        <li>Full year, no exam: <code>Numeric = 0.25 × (MP1 + MP2 + MP3 + MP4)</code></li>
+        <li>Full year, with exam: <code>Numeric = 0.225 × (MP1 + MP2 + MP3 + MP4) + 0.10 × Exam</code></li>
+        <li>Semester Gov/Living Systems Part B: <code>Numeric = 0.40 × MP1 + 0.40 × MP2 + 0.20 × Exam</code></li>
+      </ul>
+
+      <p><strong>D-D-E exception (regular semester courses with a BCPS exam)</strong><br>
+      For regular semester courses with a BCPS exam (not Gov or Living Systems Part B),
+      if a student earns D in both marking periods and E on the exam, the raw numeric is below 1.0,
+      but BCPS policy treats this combination as a passing D. The calculator only applies this
+      exception to the “Semester - with exam” course type.</p>
+
+      <p><strong>D-D-D-D-E exception (full year courses with a BCPS exam)</strong><br>
+      For full year courses with a BCPS exam, if a student earns D in all four marking periods and E
+      on the exam, the raw numeric is below 1.0, but BCPS treats this combination as a passing D.
+      The calculator applies this exception only to the “Full year - with exam” course type.</p>
+
+      <h2>How your grade was calculated</h2>
+      <div id="mathDetails" class="math-details">
+        No calculation yet. Enter grades and click "Calculate final grade" to see the math.
+      </div>
+    </div>
+
+    <div class="warning">
+      This tool is for planning only. It uses BCPS weightings and includes the D-D-E and D-D-D-D-E
+      exceptions from the grading policy. Final grades in Focus are the official record.
+    </div>
+  </div>
+
+  <script>
+    const courseTypeSelect = document.getElementById("courseType");
+
+    const fullYearInputs = document.getElementById("fullYearInputs");
+    const fullYearExamRow = document.getElementById("fullYearExamRow");
+
+    const semesterInputs = document.getElementById("semesterInputs");
+    const semesterExamRow = document.getElementById("semesterExamRow");
+
+    const examFullLabel = document.getElementById("examFullLabel");
+    const examSemLabel = document.getElementById("examSemLabel");
+
+    const resultDiv = document.getElementById("result");
+    const mathSection = document.getElementById("mathSection");
+    const mathDetails = document.getElementById("mathDetails");
+    const showMathCheck = document.getElementById("showMathCheck");
+    const calcBtn = document.getElementById("calcBtn");
+
+    let lastMathExplanation = 'No calculation yet. Enter grades and click "Calculate final grade" to see the math.';
+
+    function letterToValue(letter) {
+      switch (letter) {
+        case "A": return 4;
+        case "B": return 3;
+        case "C": return 2;
+        case "D": return 1;
+        case "E": return 0;
+        default: return null;
+      }
+    }
+
+    function valueToLetter(value) {
+      if (value >= 3.5) return "A";
+      if (value >= 2.5) return "B";
+      if (value >= 1.5) return "C";
+      if (value >= 1.0) return "D";
+      return "E";
+    }
+
+    function updateVisibleFields() {
+      const type = courseTypeSelect.value;
+
+      // Full year vs semester visibility
+      if (type === "full-no-exam" || type === "full-with-exam") {
+        fullYearInputs.classList.remove("hidden");
+        fullYearExamRow.classList.remove("hidden");
+        semesterInputs.classList.add("hidden");
+        semesterExamRow.classList.add("hidden");
+      } else {
+        fullYearInputs.classList.add("hidden");
+        fullYearExamRow.classList.add("hidden");
+        semesterInputs.classList.remove("hidden");
+      }
+
+      // Full year exam visibility
+      if (type === "full-no-exam") {
+        fullYearExamRow.classList.add("hidden");
+      } else if (type === "full-with-exam") {
+        fullYearExamRow.classList.remove("hidden");
+        examFullLabel.textContent = "Exam grade";
+      }
+
+      // Semester exam visibility and label
+      if (type === "sem-no-exam") {
+        semesterExamRow.classList.add("hidden");
+      } else if (type === "sem-with-exam") {
+        semesterExamRow.classList.remove("hidden");
+        examSemLabel.textContent = "Exam grade";
+      } else if (type === "sem-eoc-partB") {
+        semesterExamRow.classList.remove("hidden");
+        examSemLabel.textContent = "Exam grade";
+      }
+
+      resultDiv.classList.add("hidden");
+      resultDiv.innerHTML = "";
+    }
+
+    courseTypeSelect.addEventListener("change", updateVisibleFields);
+    updateVisibleFields();
+
+    showMathCheck.addEventListener("change", () => {
+      if (showMathCheck.checked) {
+        mathSection.classList.remove("hidden");
+        mathDetails.textContent = lastMathExplanation;
+      } else {
+        mathSection.classList.add("hidden");
+      }
+    });
+
+    calcBtn.addEventListener("click", () => {
+      const type = courseTypeSelect.value;
+      let numeric = null;
+      let details = "";
+      let mathText = "";
+
+      if (type === "full-no-exam" || type === "full-with-exam") {
+        const mp1Letter = document.getElementById("mp1Full").value;
+        const mp2Letter = document.getElementById("mp2Full").value;
+        const mp3Letter = document.getElementById("mp3Full").value;
+        const mp4Letter = document.getElementById("mp4Full").value;
+
+        const mp1 = letterToValue(mp1Letter);
+        const mp2 = letterToValue(mp2Letter);
+        const mp3 = letterToValue(mp3Letter);
+        const mp4 = letterToValue(mp4Letter);
+
+        if (mp1 === null || mp2 === null || mp3 === null || mp4 === null) {
+          alert("Please select a grade for MP1, MP2, MP3, and MP4.");
+          return;
+        }
+
+        if (type === "full-no-exam") {
+          numeric = 0.25 * (mp1 + mp2 + mp3 + mp4);
+          details = "Full year, no exam - each marking period 25 percent.";
+          mathText =
+            "Equation:
+" +
+            "Numeric = 0.25 × (MP1 + MP2 + MP3 + MP4)
+
+" +
+            "Plug in values:
+" +
+            `Numeric = 0.25 × (${mp1} + ${mp2} + ${mp3} + ${mp4}) = ${numeric.toFixed(2)}`;
+        } else {
+          const examLetter = document.getElementById("examFull").value;
+          const exam = letterToValue(examLetter);
+          if (exam === null) {
+            alert("Please select a grade for the exam.");
+            return;
+          }
+
+          let rawNumeric = 0.225 * (mp1 + mp2 + mp3 + mp4) + 0.10 * exam;
+          numeric = rawNumeric;
+          let ddddeApplied = false;
+
+          // D D D D E exception for full year with exam
+          if (mp1 === 1 && mp2 === 1 && mp3 === 1 && mp4 === 1 && exam === 0 && numeric < 1.0) {
+            numeric = 1.0;
+            ddddeApplied = true;
+            details = "Full year, with exam - each MP 22.5 percent, exam 10 percent (D-D-D-D-E exception applied).";
+          } else {
+            details = "Full year, with exam - each MP 22.5 percent, exam 10 percent.";
+          }
+
+          mathText =
+            "Equation:
+" +
+            "Numeric = 0.225 × (MP1 + MP2 + MP3 + MP4) + 0.10 × Exam
+
+" +
+            "Plug in values:
+" +
+            `Numeric = 0.225 × (${mp1} + ${mp2} + ${mp3} + ${mp4}) + 0.10 × ${exam} = ${rawNumeric.toFixed(2)}` +
+            (ddddeApplied
+              ? `
+
+D-D-D-D-E exception: raw numeric < 1.0 with four passing MPs and exam E, so final numeric is bumped to 1.00.`
+              : "");
+        }
+      } else {
+        // Semester variants
+        const mp1Letter = document.getElementById("mp1Sem").value;
+        const mp2Letter = document.getElementById("mp2Sem").value;
+        const mp1 = letterToValue(mp1Letter);
+        const mp2 = letterToValue(mp2Letter);
+
+        if (mp1 === null || mp2 === null) {
+          alert("Please select a grade for both marking periods.");
+          return;
+        }
+
+        if (type === "sem-no-exam") {
+          numeric = 0.5 * (mp1 + mp2);
+          details = "Semester, no exam - each marking period 50 percent.";
+          mathText =
+            "Equation:
+" +
+            "Numeric = 0.50 × MP1 + 0.50 × MP2
+
+" +
+            "Plug in values:
+" +
+            `Numeric = 0.50 × ${mp1} + 0.50 × ${mp2} = ${numeric.toFixed(2)}`;
+        } else {
+          const examLetter = document.getElementById("examSem").value;
+          const exam = letterToValue(examLetter);
+          if (exam === null) {
+            alert("Please select a grade for the exam.");
+            return;
+          }
+
+          if (type === "sem-with-exam") {
+            // Each MP = 45 percent, exam = 10 percent
+            let rawNumeric = 0.45 * (mp1 + mp2) + 0.10 * exam;
+            numeric = rawNumeric;
+            let ddeApplied = false;
+
+            // D D E exception for regular semester with exam
+            if (mp1 === 1 && mp2 === 1 && exam === 0 && numeric < 1.0) {
+              numeric = 1.0; // bump to passing D
+              ddeApplied = true;
+              details = "Semester, with exam - each MP 45 percent, exam 10 percent (D-D-E exception applied).";
+            } else {
+              details = "Semester, with exam - each MP 45 percent, exam 10 percent.";
+            }
+
+            mathText =
+              "Equation:
+" +
+              "Numeric = 0.45 × MP1 + 0.45 × MP2 + 0.10 × Exam
+
+" +
+              "Plug in values:
+" +
+              `Numeric = 0.45 × ${mp1} + 0.45 × ${mp2} + 0.10 × ${exam} = ${rawNumeric.toFixed(2)}` +
+              (ddeApplied
+                ? `
+
+D-D-E exception: raw numeric < 1.0 with two passing MPs and exam E, so final numeric is bumped to 1.00.`
+                : "");
+          } else if (type === "sem-eoc-partB") {
+            // Gov / Living Systems Part B: MPs 40 percent each, exam 20 percent
+            let rawNumeric = 0.40 * (mp1 + mp2) + 0.20 * exam;
+            numeric = rawNumeric;
+
+            details = "Semester, Gov or Living Systems Part B - each MP 40 percent, exam 20 percent.";
+            mathText =
+              "Equation:
+" +
+              "Numeric = 0.40 × MP1 + 0.40 × MP2 + 0.20 × Exam
+
+" +
+              "Plug in values:
+" +
+              `Numeric = 0.40 × ${mp1} + 0.40 × ${mp2} + 0.20 × ${exam} = ${rawNumeric.toFixed(2)}`;
+          }
+        }
+      }
+
+      const letter = valueToLetter(numeric);
+      const numericRounded = numeric.toFixed(2);
+
+      resultDiv.innerHTML = `
+        <strong>Estimated final grade:</strong><br>
+        Numeric value: <strong>${numericRounded}</strong><br>
+        Letter grade: <strong>${letter}</strong><br>
+        <span style="font-size:0.85rem;color:#555;">${details}</span>
+      `;
+      resultDiv.classList.remove("hidden");
+
+      // update math explanation
+      lastMathExplanation = mathText || lastMathExplanation;
+      if (showMathCheck.checked) {
+        mathDetails.textContent = lastMathExplanation;
+      }
+    });
+  </script>
+</body>
+</html>
