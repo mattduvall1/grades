@@ -411,13 +411,9 @@
           numeric = 0.25 * (mp1 + mp2 + mp3 + mp4);
           details = "Full year, no exam - each marking period 25 percent.";
           mathText =
-            "Equation:
-" +
-            "Numeric = 0.25 × (MP1 + MP2 + MP3 + MP4)
-
-" +
-            "Plug in values:
-" +
+            "Equation:\n" +
+            "Numeric = 0.25 × (MP1 + MP2 + MP3 + MP4)\n\n" +
+            "Plug in values:\n" +
             `Numeric = 0.25 × (${mp1} + ${mp2} + ${mp3} + ${mp4}) = ${numeric.toFixed(2)}`;
         } else {
           const examLetter = document.getElementById("examFull").value;
@@ -441,18 +437,12 @@
           }
 
           mathText =
-            "Equation:
-" +
-            "Numeric = 0.225 × (MP1 + MP2 + MP3 + MP4) + 0.10 × Exam
-
-" +
-            "Plug in values:
-" +
+            "Equation:\n" +
+            "Numeric = 0.225 × (MP1 + MP2 + MP3 + MP4) + 0.10 × Exam\n\n" +
+            "Plug in values:\n" +
             `Numeric = 0.225 × (${mp1} + ${mp2} + ${mp3} + ${mp4}) + 0.10 × ${exam} = ${rawNumeric.toFixed(2)}` +
             (ddddeApplied
-              ? `
-
-D-D-D-D-E exception: raw numeric < 1.0 with four passing MPs and exam E, so final numeric is bumped to 1.00.`
+              ? `\n\nD-D-D-D-E exception: raw numeric < 1.0 with four passing MPs and exam E, so final numeric is bumped to 1.00.`
               : "");
         }
       } else {
@@ -471,13 +461,9 @@ D-D-D-D-E exception: raw numeric < 1.0 with four passing MPs and exam E, so fina
           numeric = 0.5 * (mp1 + mp2);
           details = "Semester, no exam - each marking period 50 percent.";
           mathText =
-            "Equation:
-" +
-            "Numeric = 0.50 × MP1 + 0.50 × MP2
-
-" +
-            "Plug in values:
-" +
+            "Equation:\n" +
+            "Numeric = 0.50 × MP1 + 0.50 × MP2\n\n" +
+            "Plug in values:\n" +
             `Numeric = 0.50 × ${mp1} + 0.50 × ${mp2} = ${numeric.toFixed(2)}`;
         } else {
           const examLetter = document.getElementById("examSem").value;
@@ -503,18 +489,12 @@ D-D-D-D-E exception: raw numeric < 1.0 with four passing MPs and exam E, so fina
             }
 
             mathText =
-              "Equation:
-" +
-              "Numeric = 0.45 × MP1 + 0.45 × MP2 + 0.10 × Exam
-
-" +
-              "Plug in values:
-" +
+              "Equation:\n" +
+              "Numeric = 0.45 × MP1 + 0.45 × MP2 + 0.10 × Exam\n\n" +
+              "Plug in values:\n" +
               `Numeric = 0.45 × ${mp1} + 0.45 × ${mp2} + 0.10 × ${exam} = ${rawNumeric.toFixed(2)}` +
               (ddeApplied
-                ? `
-
-D-D-E exception: raw numeric < 1.0 with two passing MPs and exam E, so final numeric is bumped to 1.00.`
+                ? `\n\nD-D-E exception: raw numeric < 1.0 with two passing MPs and exam E, so final numeric is bumped to 1.00.`
                 : "");
           } else if (type === "sem-eoc-partB") {
             // Gov / Living Systems Part B: MPs 40 percent each, exam 20 percent
@@ -523,13 +503,9 @@ D-D-E exception: raw numeric < 1.0 with two passing MPs and exam E, so final num
 
             details = "Semester, Gov or Living Systems Part B - each MP 40 percent, exam 20 percent.";
             mathText =
-              "Equation:
-" +
-              "Numeric = 0.40 × MP1 + 0.40 × MP2 + 0.20 × Exam
-
-" +
-              "Plug in values:
-" +
+              "Equation:\n" +
+              "Numeric = 0.40 × MP1 + 0.40 × MP2 + 0.20 × Exam\n\n" +
+              "Plug in values:\n" +
               `Numeric = 0.40 × ${mp1} + 0.40 × ${mp2} + 0.20 × ${exam} = ${rawNumeric.toFixed(2)}`;
           }
         }
