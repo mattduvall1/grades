@@ -151,18 +151,20 @@
   <div class="container">
     <h1>BCPS Grade Calculator</h1>
     <p>
-      Enter marking period grades and exam grades to estimate a final course or semester grade
+      Enter marking period grades and exam grades to estimate a final grade
       based on BCPS weighting rules.
     </p>
 
     <div class="field-grid">
       <label for="courseType">Course type</label>
       <select id="courseType">
-        <option value="sem-with-exam">Semester - with exam</option>
-        <option value="sem-no-exam">Semester - no exam</option>
+        <option value="sem1-with-exam">Semester 1 - with exam</option>
+        <option value="sem1-no-exam">Semester 1 - no exam</option>
+        <option value="sem2-with-exam">Semester 2 - with exam</option>
+        <option value="sem2-no-exam">Semester 2 - no exam</option>
         <option value="full-with-exam">Full year - with exam</option>
         <option value="full-no-exam">Full year - no exam</option>
-        <option value="sem-eoc-partB">Semester - Gov or Living Systems Part B (EOC 20 percent)</option>
+        <option value="sem-eoc-partB">Gov or Living Systems Part B</option>
       </select>
     </div>
 
@@ -207,13 +209,13 @@
     <!-- Semester marking periods (only 2 MPs) -->
     <div id="semesterInputs" class="hidden">
       <div class="field-grid">
-        <label for="mp1Sem">MP1 grade</label>
+        <label for="mp1Sem" id="mp1SemLabel">MP1 grade</label>
         <select id="mp1Sem">
           <option value="">Select</option>
           <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
         </select>
 
-        <label for="mp2Sem">MP2 grade</label>
+        <label for="mp2Sem" id="mp2SemLabel">MP2 grade</label>
         <select id="mp2Sem">
           <option value="">Select</option>
           <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
@@ -236,7 +238,7 @@
 
     <label class="checkbox-container">
       <input type="checkbox" id="showMathCheck">
-      <span>Show math and reference tables</span>
+      <span>Show math</span>
     </label>
 
     <div id="result" class="result hidden"></div>
@@ -254,6 +256,15 @@
         <tr><td>E</td><td>0</td></tr>
       </table>
 
+      <p><strong>Weighting formulas</strong></p>
+      <ul style="font-size:0.9rem; padding-left:18px; margin-top:4px;">
+        <li>Semester, no exam: <code>Numeric = 0.50 × MP₁ + 0.50 × MP₂</code></li>
+        <li>Semester, with exam: <code>Numeric = 0.45 × MP₁ + 0.45 × MP₂ + 0.10 × Exam</code></li>
+        <li>Full year, no exam: <code>Numeric = 0.25 × (MP₁ + MP₂ + MP₃ + MP₄)</code></li>
+        <li>Full year, with exam: <code>Numeric = 0.225 × (MP₁ + MP₂ + MP₃ + MP₄) + 0.10 × Exam</code></li>
+        <li>Gov/Living Systems Part B: <code>Numeric = 0.40 × MP₁ + 0.40 × MP₂ + 0.20 × Exam</code></li>
+      </ul>
+
       <p><strong>Final grade ranges</strong></p>
       <table>
         <tr><th>Final numeric</th><th>Final letter</th></tr>
@@ -264,23 +275,14 @@
         <tr><td>0.00 to 0.99</td><td>E</td></tr>
       </table>
 
-      <p><strong>Weighting formulas</strong></p>
-      <ul style="font-size:0.9rem; padding-left:18px; margin-top:4px;">
-        <li>Semester, no exam: <code>Numeric = 0.50 × MP1 + 0.50 × MP2</code></li>
-        <li>Semester, with exam: <code>Numeric = 0.45 × MP1 + 0.45 × MP2 + 0.10 × Exam</code></li>
-        <li>Full year, no exam: <code>Numeric = 0.25 × (MP1 + MP2 + MP3 + MP4)</code></li>
-        <li>Full year, with exam: <code>Numeric = 0.225 × (MP1 + MP2 + MP3 + MP4) + 0.10 × Exam</code></li>
-        <li>Semester Gov/Living Systems Part B: <code>Numeric = 0.40 × MP1 + 0.40 × MP2 + 0.20 × Exam</code></li>
-      </ul>
-
-      <p><strong>D-D-E exception (regular semester courses with a BCPS exam)</strong><br>
-      For regular semester courses with a BCPS exam (not Gov or Living Systems Part B),
+      <p><strong>D-D-E exception (regular semester courses with an exam)</strong><br>
+      For regular semester courses with an exam (not Gov or Living Systems Part B),
       if a student earns D in both marking periods and E on the exam, the raw numeric is below 1.0,
       but BCPS policy treats this combination as a passing D. The calculator only applies this
-      exception to the “Semester - with exam” course type.</p>
+      exception to the semester-with-exam course types.</p>
 
-      <p><strong>D-D-D-D-E exception (full year courses with a BCPS exam)</strong><br>
-      For full year courses with a BCPS exam, if a student earns D in all four marking periods and E
+      <p><strong>D-D-D-D-E exception (full year courses with an exam)</strong><br>
+      For full year courses with an exam, if a student earns D in all four marking periods and E
       on the exam, the raw numeric is below 1.0, but BCPS treats this combination as a passing D.
       The calculator applies this exception only to the “Full year - with exam” course type.</p>
 
@@ -307,6 +309,9 @@
 
     const examFullLabel = document.getElementById("examFullLabel");
     const examSemLabel = document.getElementById("examSemLabel");
+
+    const mp1SemLabel = document.getElementById("mp1SemLabel");
+    const mp2SemLabel = document.getElementById("mp2SemLabel");
 
     const resultDiv = document.getElementById("result");
     const mathSection = document.getElementById("mathSection");
@@ -350,6 +355,19 @@
         semesterInputs.classList.remove("hidden");
       }
 
+      // Label MP fields differently for Sem 1 vs Sem 2
+      if (type === "sem1-no-exam" || type === "sem1-with-exam") {
+        mp1SemLabel.textContent = "MP1 grade";
+        mp2SemLabel.textContent = "MP2 grade";
+      } else if (type === "sem2-no-exam" || type === "sem2-with-exam") {
+        mp1SemLabel.textContent = "MP3 grade";
+        mp2SemLabel.textContent = "MP4 grade";
+      } else {
+        // Gov/Living Systems Part B (keep generic)
+        mp1SemLabel.textContent = "MP1 grade";
+        mp2SemLabel.textContent = "MP2 grade";
+      }
+
       // Full year exam visibility
       if (type === "full-no-exam") {
         fullYearExamRow.classList.add("hidden");
@@ -359,12 +377,9 @@
       }
 
       // Semester exam visibility and label
-      if (type === "sem-no-exam") {
+      if (type === "sem1-no-exam" || type === "sem2-no-exam") {
         semesterExamRow.classList.add("hidden");
-      } else if (type === "sem-with-exam") {
-        semesterExamRow.classList.remove("hidden");
-        examSemLabel.textContent = "Exam grade";
-      } else if (type === "sem-eoc-partB") {
+      } else if (type === "sem1-with-exam" || type === "sem2-with-exam" || type === "sem-eoc-partB") {
         semesterExamRow.classList.remove("hidden");
         examSemLabel.textContent = "Exam grade";
       }
@@ -457,9 +472,10 @@
           return;
         }
 
-        if (type === "sem-no-exam") {
+        if (type === "sem1-no-exam" || type === "sem2-no-exam") {
           numeric = 0.5 * (mp1 + mp2);
-          details = "Semester, no exam - each marking period 50 percent.";
+          const semLabel = type === "sem1-no-exam" ? "Semester 1" : "Semester 2";
+          details = `${semLabel}, no exam - each marking period 50 percent.`;
           mathText =
             "Equation:\n" +
             "Numeric = 0.50 × MP1 + 0.50 × MP2\n\n" +
@@ -473,7 +489,7 @@
             return;
           }
 
-          if (type === "sem-with-exam") {
+          if (type === "sem1-with-exam" || type === "sem2-with-exam") {
             // Each MP = 45 percent, exam = 10 percent
             let rawNumeric = 0.45 * (mp1 + mp2) + 0.10 * exam;
             numeric = rawNumeric;
@@ -483,10 +499,10 @@
             if (mp1 === 1 && mp2 === 1 && exam === 0 && numeric < 1.0) {
               numeric = 1.0; // bump to passing D
               ddeApplied = true;
-              details = "Semester, with exam - each MP 45 percent, exam 10 percent (D-D-E exception applied).";
-            } else {
-              details = "Semester, with exam - each MP 45 percent, exam 10 percent.";
             }
+            const semLabel = type === "sem1-with-exam" ? "Semester 1" : "Semester 2";
+            details = `${semLabel}, with exam - each MP 45 percent, exam 10 percent` +
+              (ddeApplied ? " (D-D-E exception applied)." : ".");
 
             mathText =
               "Equation:\n" +
